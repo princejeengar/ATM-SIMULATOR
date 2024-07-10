@@ -6,7 +6,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Date;
 
-
 public class Withdrawal extends JFrame implements ActionListener {
 
     JTextField amount;
@@ -25,7 +24,7 @@ public class Withdrawal extends JFrame implements ActionListener {
         image.setBounds(0, 0, 900, 900);
         add(image);
 
-        JLabel text = new JLabel("Enter the amount you want to Withdrawal");
+        JLabel text = new JLabel("Enter the amount you want to withdraw"); // Changed on line 34
         text.setForeground(Color.WHITE);
         text.setFont(new Font("System", Font.BOLD, 16));
         text.setBounds(180, 300, 400, 20);
@@ -36,7 +35,7 @@ public class Withdrawal extends JFrame implements ActionListener {
         amount.setBounds(180, 350, 310, 25);
         image.add(amount);
 
-        withdrawal = new JButton("Withdrawal");
+        withdrawal = new JButton("Withdraw");
         withdrawal.setBounds(355, 485, 150, 30);
         withdrawal.addActionListener(this);
         image.add(withdrawal);
@@ -55,11 +54,8 @@ public class Withdrawal extends JFrame implements ActionListener {
         if (ae.getSource() == withdrawal) {
             String number = amount.getText();
             Date date = new Date();
-            if (number.equals(" ")) {
-                JOptionPane.showMessageDialog(null, "Please enter the amount you want to Withdrawal");
-            }else if (ae.getSource() == back) {
-                setVisible(false);
-                new Transactions(pinnumber).setVisible(true);
+            if (number.equals("")) {
+                JOptionPane.showMessageDialog(null, "Please enter the amount you want to withdraw");
             } else {
                 try {
                     Conn c = new Conn();
@@ -73,29 +69,28 @@ public class Withdrawal extends JFrame implements ActionListener {
                             balance -= Integer.parseInt(rs.getString("amount"));
                         }
                     }
-                    if (ae.getSource() != back && balance < Integer.parseInt(number)) {
+                    if (balance < Integer.parseInt(number)) { 
                         JOptionPane.showMessageDialog(null, "Insufficient Balance");
                         setVisible(false);
-                        new Transactions(pinnumber).setVisible(true);
-                        return;
-                    }else{
-
+                        new Transactions(pinnumber).setVisible(true); 
+                    } else {
                         String query = "insert into bank values('" + pinnumber + "','" + date + "','Withdraw','" + number + "')";
                         c.s.executeUpdate(query);
-                        JOptionPane.showMessageDialog(null, "RS " + number + " Withdrawl successfully");
+                        JOptionPane.showMessageDialog(null, "RS " + number + " Withdrawn Successfully");
                         setVisible(false);
                         new Transactions(pinnumber).setVisible(true);
-
                     }
                 } catch (Exception e) {
                     System.out.println(e);
                 }
             }
+        } else if (ae.getSource() == back) {
+            setVisible(false);
+            new Transactions(pinnumber).setVisible(true);
         }
     }
 
     public static void main(String[] args) {
         new Withdrawal("");
-
     }
 }
